@@ -1,0 +1,269 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+header{
+    text-align: center;
+    padding: 2%;
+}
+section{
+    display: flex;
+}
+a{
+    text-decoration: none !important;
+    color: inherit;
+}
+section .signup-container{
+    text-align: center;
+    width: 100%;
+    border-radius: 12px;
+    -webkit-box-shadow: 0px 8px 20px 8px rgba(0,0,0,0.4);
+-moz-box-shadow: 0px 8px 20px 8px rgba(0,0,0,0.4);
+box-shadow: 0px 8px 20px 8px rgba(0,0,0,0.4);
+
+}
+section .signup-container h2{
+    text-align: center;
+}
+section .signup-container h6{
+    font-weight: bold;
+    margin-top: 10px;
+}
+section .signup-container h6 a{
+    color: #5CDB95;
+    text-decoration: none;
+}
+
+section .image-container img{
+    position: relative;
+    left: -5%;
+    width: 100%;
+    height: auto;
+}
+input, input:focus{
+    border-radius: 12px;
+    width: 85%;
+    height: 2.5em;
+    margin: .5em .1rem;
+    border: 1px solid;
+    padding: .5rem 1rem;
+    outline: none;
+}
+
+#submit{
+    position: relative;
+    top: 50%;
+    background-color: #5CDB95;
+    border-radius: 8px;
+    padding: 2% 32%;
+    text-align: center;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+}
+
+/* Login page Styling */
+#forgotPassword{
+    position: relative;
+    left: -25%;
+    color: #5CDB95;
+    font-size: 14px;
+}
+
+label input[type="checkbox"]{ 
+    font-size: 8px;
+    width:10%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.checkClass{
+    position: relative;
+    margin: 2% 0;
+    left: 8%;
+    text-align: left;
+}
+.checkClass label{
+    width: 100%;
+}
+
+/* -------------------- Dashboard ------------------------ */
+
+/* Navigation Bar section */
+
+#logo img{
+    width: 130px;
+    height: auto;
+    margin: 4px 12px;
+    padding: 10px;
+    float: left;
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#navigation-container {
+    width: 100%;
+    margin: 0 auto;
+    height: 70px;
+  }
+  
+  .navigation-bar {
+    height: 70px;
+    width: 100%;
+    text-align:right;
+  }
+  
+
+  .navigation-bar ul {
+    padding: 0px;
+    margin: 0px 16px;
+    text-align: center;
+    display:inline-block;
+    vertical-align:top;
+  }
+  
+  .navigation-bar li {
+    list-style-type: none;
+    padding: 0px;
+    height: 24px;
+    margin: 4px 12px;
+
+    display: inline;
+    font-weight: bold;
+  }
+  
+  .navigation-bar li a {
+    color: #76AB23;
+    font-size: 18px;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    line-height: 70px;
+    padding: 5px 15px;
+    opacity: 0.7;
+  }
+  
+  #menu {
+    float: right;
+  }
+
+  #displayUserName{
+      margin-left: 10px;
+  }
+
+
+  /* Branding section */
+
+  .branding{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .branding .company-title{
+    float: left;
+    margin: 16px;
+    text-align: left;
+    width: 100%;
+  }
+  .branding .company-title h1{
+    font-weight: bold;
+    text-align: left;
+    font-family: 'Moul';
+    font-style: normal;
+    font-size: 3rem;
+  }
+  .branding .company-title h1 span{
+      color: #12B159E0;
+  }
+.plant-image .img img{
+    max-width: 30rem;
+    min-width: 15rem;
+}
+  .upload-button, .upload-button:hover{
+      position: absolute;
+      /* top: 70%;
+      left: 15%; */
+      padding: 6px 80px;
+      background-color: #5CDB95;
+      border-radius: 16px;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      color: #fff;
+      font-weight: bold;
+}
+.upload-button:hover{
+    transition: .2s ease-in-out;
+    scale: 1.05;
+}
+
+/* Explore Section */
+
+.explore-section .card-deck{
+    width: 100%;
+    height: auto;
+    background-color: rgba(231, 229, 229, 0.781);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.explore-section .card-deck .card{
+    margin-top: 10px;
+}
+
+
+#download-button{
+    position: absolute;
+    padding: 6px 40px;
+    background-color: #5CDB95;
+    border-radius: 16px;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.imageContainer img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    max-width: 18rem;
+    height: auto;
+    border-radius: 16px;
+    -webkit-box-shadow: 0px 0px 22px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 22px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 22px 0px rgba(0,0,0,0.75);
+}
+
+#displayUserName{
+    color: #5CDB95;
+}
+
+#upload-section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* margin: 0 auto; */
+    width: 100%;
+}
+.row{
+    margin: 0 auto;
+}
+
+.wrapper{
+    position:relative;
+  }
+.wrapper i{
+  position: absolute;
+  top: 15px;
+  right: 40px;
+}
