@@ -11,7 +11,7 @@
                 </div>
                 <div class="signup-container col-lg-4 col-md-6">
                     <h2>Join the Community Now!</h2>
-                    <form id="login_form" action="" method="post">
+                    <form id="login_form" action="/userLogin" method="post">
                         <input id="userEmail" name="userEmail" type="email" placeholder="Enter Email" required>
                         <div class="wrapper">
                             <input id="userPassword" name="userPassword" type="password" placeholder="Enter Password"
@@ -27,7 +27,8 @@
                                 Keep me Signed In
                             </label>
                         </div>
-                        <a href="" id="submit">Login</a>
+                        <a type="submit" href="#" onclick="document.getElementById('login_form').submit();" id="submit">Login</a>
+                        <!-- <input type="submit"> -->
                     </form>
                     <h6>New here? <a href="/">Signup</a></h6>
                 </div>
@@ -43,43 +44,47 @@
 
 
         $(document).ready(function () {
-            $('#submit').click(function () {
-                $("#login_form").submit(function (e) {
-                    e.preventDefault();
-                });
-                let userPassword = $('#userPassword').val();
-                var flag = true;
-                if ($('#userPassword').val().length === 0) {
-                    alert("Password can't be empty!");
-                } else if ($('#userPassword').val().length < 8) {
-                    alert('Password length too small');
-                    $('#userPassword').val("");
-                } else {
-                    var submitYesNo = confirm("Are you sure, you want to submit?");
-                    if (!submitYesNo) return false;
-                    else {
-                        let email = $("#userEmail").val();
-                        let password = $("#userPassword").val();
-                        $.ajax({
-                            type: "post",
-                            url: "/userLogin",
-                            data: {
-                                email: email,
-                                password: password
-                            },
-                            success: function (response) {
-                                if (response === "invalid credentials") {
-                                    alert("Invalid Credentials");
-                                }
-                                if (response === "Login Successful") {
-                                    alert("Login Successful");
-                                    window.location.replace("/home");
-                                }
-                            },
-                        });
-                    }
-                }
-            })
+            // $('#submit').click(function () {
+            //     submit();
+            // })
+            // $('#submit').click(function () {
+            //     $("#login_form").submit(function (e) {
+            //         e.preventDefault();
+            //     });
+            //     let userPassword = $('#userPassword').val();
+            //     var flag = true;
+            //     if ($('#userPassword').val().length === 0) {
+            //         alert("Password can't be empty!");
+            //     } else if ($('#userPassword').val().length < 8) {
+            //         alert('Password length too small');
+            //         $('#userPassword').val("");
+            //     } else {
+            //         // var submitYesNo = confirm("Are you sure, you want to submit?");
+            //         // if (!submitYesNo) return false;
+            //         // else {
+            //             let email = $("#userEmail").val();
+            //             let password = $("#userPassword").val();
+            //             $.ajax({
+            //                 type: "post",
+            //                 url: "/userLogin",
+            //                 data: {
+            //                     userEmail: email,
+            //                     userPassword: password
+            //                 },
+            //                 success: function (response) {
+            //                     if (response === "invalid credentials") {
+            //                         alert("Invalid Credentials");
+            //                     }
+            //                     if (response === "Login Successful") {
+            //                         alert("Login Successful");
+            //                         window.location.replace("/home");
+            //                     }
+            //                     else alert('always')
+            //                 },
+            //             });
+            //         // }
+            //     }
+            // })
         });
     </script>
 

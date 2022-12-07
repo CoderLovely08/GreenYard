@@ -22,7 +22,8 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // Connecting to database
-const pg = require('pg')
+const pg = require('pg');
+const { result } = require("lodash");
 var client = new pg.Client("postgres://ygxvpnte:Z76TPbkGhluY1P4yj_ZuERcNC3HuiMcQ@tiny.db.elephantsql.com/ygxvpnte");
 client.connect();
 
@@ -86,18 +87,68 @@ app.post("/userSignup", urlencodedparser, function (req, res) {
 });
 
 app.post("/userLogin", urlencodedparser, function (req, res) {
-    let username = req.body.email;
-    let userPassword = req.body.password;
-    bcrypt.hash(userPassword, saltRounds, (err, hash) => {
-        userPassword = hash;
-        console.log(username);
-        let query = `Select * from UserInfo where user_email='${username}'`
-        client.query(query, function (err, result) {
-            console.log(result.rows);
-            if (result.rows.length == 1) { res.send("Login Successful") }
-            else res.send("invalid credentials");
-        })
-    })
+    let username = req.body.userEmail;
+    let userPassword = req.body.userPassword;
+
+    // client.query(query).then(result => {
+    //     if(result.rows.length==1) res.send("Login Successful")
+    //     console.log('done');
+    // })
+
+    (async () => {
+        try {
+            let query = `Select * from UserInfo where user_email='${username}'`
+
+            const mydata = await client.query(query);
+            if (mydata.rows.length == 1){
+                console.log("here");
+                res.render("home")
+            }
+            else res.send("invalid credentials")
+            console.log(mydata.rows.length);
+            // return mydata;
+        } catch (err) {
+            return err.stack;
+        }
+    })();
+
+    // getResult(query).then(result => {
+    //     // if (result.rows.length == 1) res.send("Login Successful")
+    //     // else res.send("invalid credentials")
+    //     console.log(result.rows[0].user_name);
+    // });
+    // res.send("soemthign")
+    console.log('hi');
+
+
+    // console.log(result,"hi");
+
+    // bcrypt.hash(userPassword, saltRounds, (err, hash) => {
+    //     userPassword = hash;
+    //     console.log(username);
+    // async.series([
+    //     function (callback) {
+    //         let loginStatus = ''
+    //         let query = `Select * from UserInfo where user_email='${username}'`
+    //         // client.query(query, function (err, result) {
+    //         //     if (!err) {
+    //         //         console.log(result.rows);
+    //         //         if (result.rows.length == 1) { loginStatus = "Login Successful" }
+    //         //         else loginStatus = "invalid credentials"
+    //         //     }
+    //         // })
+    //         await client.query(query).then(result => {
+    //             if (result.rows.length == 1) res.send("Login Successful")
+    //             else res.send("invalid credentials")
+    //             // console.log(loginStatus);
+    //             // (loginStatus);
+    //             console.log('hi form inside');
+    //             callback();
+    //         });
+    //         console.log('hi');
+    //     }
+    // ])
+    // })
 })
 
 
