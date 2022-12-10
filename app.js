@@ -59,6 +59,7 @@ app.get("/home", function (req, res) {
     res.render("home")
 })
 
+
 // --------------------------------------------------------
 //                      POST ROUTES
 // --------------------------------------------------------
@@ -86,69 +87,27 @@ app.post("/userSignup", urlencodedparser, function (req, res) {
     });
 });
 
-app.post("/userLogin", urlencodedparser, function (req, res) {
+async function getData(username) {
+    try {
+        let query = `Select * from UserInfo where user_email='${username}'`
+        return await client.query(query);;
+    } catch (err) {
+        return err.stack;
+    }
+};
+
+app.post("/userLogin", urlencodedparser, async function (req, res) {
     let username = req.body.userEmail;
     let userPassword = req.body.userPassword;
 
-    // client.query(query).then(result => {
-    //     if(result.rows.length==1) res.send("Login Successful")
-    //     console.log('done');
-    // })
+    let response = await getData(username);
 
-    (async () => {
-        try {
-            let query = `Select * from UserInfo where user_email='${username}'`
-
-            const mydata = await client.query(query);
-            if (mydata.rows.length == 1){
-                console.log("here");
-                res.render("home")
-            }
-            else res.send("invalid credentials")
-            console.log(mydata.rows.length);
-            // return mydata;
-        } catch (err) {
-            return err.stack;
-        }
-    })();
-
-    // getResult(query).then(result => {
-    //     // if (result.rows.length == 1) res.send("Login Successful")
-    //     // else res.send("invalid credentials")
-    //     console.log(result.rows[0].user_name);
-    // });
-    // res.send("soemthign")
-    console.log('hi');
-
-
-    // console.log(result,"hi");
-
-    // bcrypt.hash(userPassword, saltRounds, (err, hash) => {
-    //     userPassword = hash;
-    //     console.log(username);
-    // async.series([
-    //     function (callback) {
-    //         let loginStatus = ''
-    //         let query = `Select * from UserInfo where user_email='${username}'`
-    //         // client.query(query, function (err, result) {
-    //         //     if (!err) {
-    //         //         console.log(result.rows);
-    //         //         if (result.rows.length == 1) { loginStatus = "Login Successful" }
-    //         //         else loginStatus = "invalid credentials"
-    //         //     }
-    //         // })
-    //         await client.query(query).then(result => {
-    //             if (result.rows.length == 1) res.send("Login Successful")
-    //             else res.send("invalid credentials")
-    //             // console.log(loginStatus);
-    //             // (loginStatus);
-    //             console.log('hi form inside');
-    //             callback();
-    //         });
-    //         console.log('hi');
-    //     }
-    // ])
-    // })
+    let resultRows = (response.rows.length);
+    var setStatus = ''
+    if (resultRows == 1) {
+        setStatus = 'Login Successful'
+    }
+    return res.send({ some: JSON.stringify({ response: 'json' }) });
 })
 
 
