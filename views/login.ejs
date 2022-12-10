@@ -70,11 +70,13 @@
                             alert(response)
                             // Check if the request was successful
                             if (response.success) {
+                                alert("Login Successfull")
                                 // Use the response data
                                 console.log(response.result);
+                                window.location.replace("/home");
 
                                 // Generate an alert with the response data
-                                alert(response.result);
+                                // alert(response.result);
                             } else {
                                 // Handle the error
                                 console.error(response.error);
