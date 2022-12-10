@@ -1,0 +1,60 @@
+<%- include("partials/header") -%>
+    <%- include("partials/dashboardHeader") -%>
+        <div class="container">
+            <form action="" method="post" enctype="multipart/form-data">
+                <br>
+                <div class="form-group ">
+                    <label for="">Post Title</label>
+                    <input type="text" class="form-control" name="postTitle" id="postTitle" aria-describedby="helpId"
+                        required placeholder="Enter Post Title">
+                </div>
+                <div class="form-group">
+                    <label for="">Type out Post Information here</label>
+                    <textarea class="form-control" name="plantInformation" id="plantInformation"
+                        rows="7"></textarea><span id="display_count">0</span> words.
+                </div>
+                <div class="form-group">
+                    <label for="">Select a Plant Thumbnail</label>
+                    <input type="file" class="form-control" name="thumbnail" id="thumbnail" aria-describedby="helpId"
+                        required placeholder="Select Image Thumbnail">
+                </div>
+                <button id="" type="submit" class="btn btn-lg btn-primary publishBtn">Publish</button>
+            </form>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <!-- <script src='script.js'></script> -->
+        <script src="../../script/script.js"></script>
+        <script>
+            $(document).ready(function () {
+                var flag = false;
+                var words = 0;
+                $('#postTitle').on('change', function () {
+                    if ($('#postTitle').val().length <= 3) {
+                        alert("Title is too short!")
+                        $('#postTitle').val('')
+                    }
+                })
+                $('#plantInformation').on('keyup', function () {
+                    if ((this.value.match(/\S+/g)) != null) {
+                        words = words + this.value.match(/\S+/g).length;
+                    }
+
+                    if (words > 200) {
+                        // Split the string on first 200 words and rejoin on spaces
+                        var trimmed = $(this).val().split(/\s+/, 200).join(" ");
+                        // Add a space at the end to make sure more typing creates new words
+                        $(this).val(trimmed + " ");
+                    }
+                    else {
+                        $('#display_count').text(words);
+                    }
+                })
+                $('#plantInformation').on('change', function () {
+                    if (words < 50) alert("Add a descriptive information.")
+                })
+            });
+
+        </script>
+
+        <%- include("partials/footer") -%>
