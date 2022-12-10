@@ -117,6 +117,7 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
             let hashedPassword = result.rows[0].user_password
             let loggedUserName = result.rows[0].user_name
             let loggedUserEmail = result.rows[0].user_email
+            let loggedUserId = result.rows[0].user_id
 
             bcrypt.compare(userPassword, hashedPassword, function (err, result) {
                 if (err) {
@@ -128,6 +129,7 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
                 if (result) {
                     // If the passwords match, log the user in
                     req.session.authenticated = true;
+                    req.session.loggedUserId = loggedUserId
                     req.session.loggedUserName = loggedUserName
                     req.session.loggedUserEmail = loggedUserEmail
                     res.send({ success: true, result: "Login Successfull" });
@@ -143,6 +145,49 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
     });
 });
 
+
+app.post("/uploadPost", urlencodedparser, async function (req, res) {
+
+    // check if files are not empty
+    if (!req.files) {
+        return res.status(400).send("No files Found!");
+    }
+    // if file exists store it in myfile variable
+    let myfile = req.files.thumbnail;
+
+    let uploadPath = __dirname + "/uploads/" + myfile.name;
+    // move the file to uploads folder for temp storage
+    myfile.mv(uploadPath, function (err) {
+        // if (err) console.log("Error!");
+
+        // upload the moved file to imgur and recieve a callback
+        imgur(fs.readFileSync(uploadPath)).then(data => {
+            let postTitle = req.body.postTitle;
+            let plantInformation = req.body.plantInformation;
+            // let postAuthorId = req.session.loggedUserId
+            let postAuthorId = 4
+            let postImageReference = data.link
+
+            let insertQuery = `Insert into PostInfo(post_title, post_description, post_author_id, post_image_reference) values('${postTitle}', '${plantInformation}', ${postAuthorId}, '${postImageReference}')`
+
+            console.log(insertQuery);
+
+            client.query(insertQuery, function () {
+                if (err) {
+                    // Handle any errors that occurred during the query
+                    console.error(err);
+                } else {
+                    // Send a response to the client
+                    res.render("home")
+                }
+            })
+        });
+
+        // removing the file from our temporary uploads folder
+        fs.unlinkSync(uploadPath);
+
+    });
+});
 
 
 
