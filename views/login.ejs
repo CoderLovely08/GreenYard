@@ -56,28 +56,32 @@
                     alert('Password length too small');
                     $('#userPassword').val("");
                 } else {
-                        let email = $("#userEmail").val();
-                        let password = $("#userPassword").val();
-                        $.ajax({
-                            type: "post",
-                            url: "/userLogin",
-                            data: {
-                                userEmail: email,
-                                userPassword: password
-                            },
-                            success: function (response) {
-                                console.log(response)
-                                if (response === "invalid credentials") {
-                                    alert("Invalid Credentials");
-                                }
-                                if (response === "Login Successful") {
-                                    alert("Login Successful");
-                                    window.location.replace("/home");
-                                }
-                                else alert('always')
-                            },
-                        });
-                    // }
+                    let email = $("#userEmail").val();
+                    let password = $("#userPassword").val();
+                    // Make an AJAX request to the server
+                    $.ajax({
+                        url: "/userLogin",
+                        method: "POST",
+                        data: {
+                            userEmail: email,
+                            userPassword: password
+                        },
+                        success: function (response) {
+                            alert(response)
+                            // Check if the request was successful
+                            if (response.success) {
+                                // Use the response data
+                                console.log(response.result);
+
+                                // Generate an alert with the response data
+                                alert(response.result);
+                            } else {
+                                // Handle the error
+                                console.error(response.error);
+                            }
+                        }
+                    });
+
                 }
             })
         });

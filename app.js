@@ -96,19 +96,28 @@ async function getData(username) {
     }
 };
 
+// let result = await getData(username)
 app.post("/userLogin", urlencodedparser, async function (req, res) {
     let username = req.body.userEmail;
     let userPassword = req.body.userPassword;
-
-    let response = await getData(username);
-
-    let resultRows = (response.rows.length);
-    var setStatus = ''
-    if (resultRows == 1) {
-        setStatus = 'Login Successful'
-    }
-    return res.send({ some: JSON.stringify({ response: 'json' }) });
-})
+  
+    // Use a parameterized query to avoid SQL injection vulnerabilities
+    client.query("Select * from UserInfo where user_email=$1", [username], function (err, result) {
+      if (err) {
+        // Handle the error
+        console.error(err); // Log the error
+        res.send({ success: false, error: err });
+      } else {
+        // Log the result for debugging purposes
+        console.log(result.rows);
+  
+        // Send the result to the client
+        res.send({ success: true, result: result });
+      }
+    });
+  });
+  
+  
 
 
 app.listen(3000, function () {
