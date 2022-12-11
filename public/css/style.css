@@ -291,3 +291,10 @@ label input[type="checkbox"]{
   top: 15px;
   right: 40px;
 }
+
+.post-table th{
+    width: 10px;
+}
+.table tbody tr td a img{
+    max-width: 100px;
+}

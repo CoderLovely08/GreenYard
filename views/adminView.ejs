@@ -1,4 +1,49 @@
 <%- include("partials/header") -%>
-    Welcome to admin view
+    <%- include("partials/dashboardHeader") -%>
 
-    
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr class="post-table">
+                        <th>Post Id</th>
+                        <th>Post Title</th>
+                        <th>Post Image</th>
+                        <th>Post Author</th>
+                        <th>Post Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i<userPostDetails.length; i++){ %>
+
+                        <tr>
+                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                                    <%= userPostDetails[i].post_id %>
+                                </a>
+
+                            </td>
+                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                                    <%= userPostDetails[i].post_title %>
+                                </a>
+
+                            </td>
+                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>> <img
+                                        src="<%= userPostDetails[i].post_image_reference %>" alt=<%= userPostDetails[i].post_title %>>
+                                </a>
+                            </td>
+                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                                    <%= userPostDetails[i].post_author_name %>
+                                </a>
+
+                            </td>
+                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                                    <%= userPostDetails[i].post_description.substring(0,100) %> <a href=<%- "/posts/"
+                                            +userPostDetails[i].post_id %>>...Read more</a>
+                                </a>
+
+                            </td>
+                        </tr>
+
+                        <% } %>
+                </tbody>
+            </table>
+        </div>

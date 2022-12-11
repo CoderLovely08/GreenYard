@@ -185,7 +185,7 @@ app.route("/adminLogin").get(function (req, res) {
         if (queryResult.rows.length != 0) {
             req.session.isAdminAuthenticated = true
             req.session.loggedAdminId = queryResult.rows[0].admin_id
-            req.session.loggedAdminName = queryResult.rows[0].admin_user_name
+            req.session.loggedAdminName = queryResult.rows[0].admin_name
         }
         res.redirect('/adminView')
     })
@@ -197,15 +197,15 @@ app.route("/adminView").get(function (req, res) {
         res.render('adminLogin')
     } else {
 
-        client.query("select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id", function (err, queryResults) {
+        client.query("select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name as post_author_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id", function (err, queryResults) {
 
             let userPostDetails = queryResults.rows
 
-            let adminDetails = {
+            let userDetails = {
                 adminId: req.session.loggedAdminId,
-                adminName: req.session.loggedAdminName
+                userName: req.session.loggedAdminName
             }
-            res.render('adminView', { userPostDetails, adminDetails })
+            res.render('adminView', { userPostDetails, userDetails })
         })
     }
 })
