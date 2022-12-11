@@ -26,7 +26,9 @@
     "express-session": "^1.17.3",
     "imgur-uploader": "^4.2.1",
     "lodash": "^4.17.21",
+    "pdfkit": "^0.13.0",
     "pg": "^8.8.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "wkhtmltopdf": "^0.4.0"
   }
 }

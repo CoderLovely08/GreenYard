@@ -10,13 +10,14 @@
                         <th>Post Image</th>
                         <th>Post Author</th>
                         <th>Post Description</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% for(let i=0; i<userPostDetails.length; i++){ %>
 
                         <tr>
-                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                            <td> <a id="post-id" href=<%- "/posts/" +userPostDetails[i].post_id %>>
                                     <%= userPostDetails[i].post_id %>
                                 </a>
 
@@ -27,7 +28,8 @@
 
                             </td>
                             <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>> <img
-                                        src="<%= userPostDetails[i].post_image_reference %>" alt=<%= userPostDetails[i].post_title %>>
+                                        src="<%= userPostDetails[i].post_image_reference %>"
+                                        alt=<%=userPostDetails[i].post_title %>>
                                 </a>
                             </td>
                             <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
@@ -41,9 +43,42 @@
                                 </a>
 
                             </td>
+                            <td> <button class="btn btn-primary" value=<%=userPostDetails[i].post_id %>
+                                    >Delete</button> </td>
                         </tr>
 
                         <% } %>
                 </tbody>
             </table>
         </div>
+
+        <!-- Jquery CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <!-- <script src='script.js'></script> -->
+        <script src="../../script/script.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('button').click(function () {
+                    let postId = ($(this).attr('value'));
+
+                    let confirmDeleteOption = confirm("Are you sure to delete this post?")
+
+                    if (!confirmDeleteOption) {
+                        return false
+                    } else {
+                        $.ajax({
+                            type: "post",
+                            url: "/deletePost",
+                            data: {
+                                postId: postId
+                            },
+                            success: function (response) {
+                                alert(response);
+                                location.reload();
+                            }
+                        })
+                    }
+                })
+            });
+        </script>

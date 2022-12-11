@@ -8,7 +8,8 @@
                     height='500' alt=<%= postResult.post_title %>>
 
                         <br>
-                        <button id="download-button"> Download PDF</button>
+                        <a href=<%=shareData %> ><button id="download-button"> Share <i class="fa fa-share"
+                                    aria-hidden="true"></i></button></a>
 
                 </div>
                 <div class="col-lg">
@@ -16,7 +17,9 @@
                     <h2 class="text-left">
                         <%= postResult.post_title %>
                     </h2>
-                    <strong>Author: </strong> <strong><u><%= postResult.user_name %></u></strong>
+                    <strong>Author: </strong> <strong><u>
+                            <%= postResult.user_name %>
+                        </u></strong>
                     <br>
                     <strong>Description:</strong>
                     <p>

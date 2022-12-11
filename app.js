@@ -141,7 +141,16 @@ app.get("/forgotPassword", function (req, res) {
     res.render("passwordReset");
 });
 
+
+// --------------------------------------------------------
+//                      API Routes
+// --------------------------------------------------------
+
+// --------------------------------------------------------
+//                            GET 
+// --------------------------------------------------------
 app.get("/posts/:postId", function (req, res) {
+    
     // Get the logged-in user's details
     let userDetails = {
         userName: req.session.loggedUserName,
@@ -163,12 +172,32 @@ app.get("/posts/:postId", function (req, res) {
             } else {
                 // Otherwise, render the posts page with the data received from the database
                 let postResult = result.rows[0];
-                res.render("posts", { postResult, userDetails });
+                
+                let shareIntroText = "Found this informative article on GreenYard Check this out now ".replaceAll(" ","%20")
+                let shareDataLink = "http://greenyard.onrender.com/posts/"
+                let shareData = "whatsapp://send?text=" + shareIntroText + shareDataLink + result.rows[0].post_id
+                res.render("posts", { postResult, userDetails, shareData });
             }
         }
     );
 });
 
+
+// --------------------------------------------------------
+//                            DELETE 
+// --------------------------------------------------------
+app.post("/deletePost", function (req, res) {
+    const postId = req.body.postId;
+    client.query("Delete from PostInfo where post_id = $1", [postId], function (err, queryResult) {
+        if (err) {
+            console.log(err);
+            res.status(400).send("Error while deleting post")
+        } else {
+            let response = "Post deleted with Id:" + postId
+            res.status(200).send(response);
+        }
+    })
+})
 
 app.route("/adminLogin").get(function (req, res) {
     if (req.session.isAdminAuthenticated) {
