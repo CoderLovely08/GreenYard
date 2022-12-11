@@ -15,9 +15,6 @@ a{
     color: inherit;
 }
 
-.container{
-    /* margin-left: 0; */
-}
 
 section .signup-container{
     text-align: center;
@@ -139,33 +136,7 @@ label input[type="checkbox"]{
   }
   
 
-  .navigation-bar ul {
-    padding: 0px;
-    margin: 0px 16px;
-    text-align: center;
-    display:inline-block;
-    vertical-align:top;
-  }
-  
-  .navigation-bar li {
-    list-style-type: none;
-    padding: 0px;
-    height: 24px;
-    margin: 4px 12px;
 
-    display: inline;
-    font-weight: bold;
-  }
-  
-  .navigation-bar li a {
-    color: #76AB23;
-    font-size: 18px;
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    text-decoration: none;
-    line-height: 70px;
-    padding: 5px 15px;
-    opacity: 0.7;
-  }
   
   #menu {
     float: right;
@@ -208,8 +179,7 @@ label input[type="checkbox"]{
 }
   .upload-button, .upload-button:hover{
       position: absolute;
-      /* top: 70%;
-      left: 15%; */
+      max-width: 480px;
       padding: 6px 80px;
       background-color: #5CDB95;
       border-radius: 16px;
@@ -355,7 +325,11 @@ label input[type="checkbox"]{
     .navigation-container ul {
       flex-direction: column;
     }
-  
+    
+    .plant-image{
+        display: none;
+    }
+
     .navigation-container li {
       text-align: center;
     }
@@ -366,3 +340,33 @@ label input[type="checkbox"]{
     margin : 0 15px;
   }
   
+
+  div ul li a,  div ul li a:hover{
+    color: #78BB6E;
+    font-size: 18px;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    text-decoration: none;
+  }
+
+  .hover-underline-animation {
+    position: relative;
+    text-decoration: none;
+  }
+  
+  .hover-underline-animation::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #78BB6E;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+  }
+  
+  .hover-underline-animation:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  } 
