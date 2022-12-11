@@ -170,17 +170,46 @@ app.get("/posts/:postId", function (req, res) {
 });
 
 
-app.post("/logoutUser", function (req, res) {
-    req.session.destroy(function (err) {
-        if (err) {
-            // If there was an error, send a server error response
-            res.status(500).send({ success: false, error: err });
-        } else {
-            // Otherwise, send a success response
-            res.status(400).redirect('/login')
+app.route("/adminLogin").get(function (req, res) {
+    if (req.session.isAdminAuthenticated) {
+
+        res.redirect('/adminView')
+    } else {
+        res.render('adminLogin')
+    }
+}).post(function (req, res) {
+    let adminUserName = req.body.adminUserName
+    let adminPassword = req.body.adminPassword
+
+    client.query("Select * from AdminInfo where admin_user_name = $1 and admin_password = $2", [adminUserName, adminPassword]).then(queryResult => {
+        if (queryResult.rows.length != 0) {
+            req.session.isAdminAuthenticated = true
+            req.session.loggedAdminId = queryResult.rows[0].admin_id
+            req.session.loggedAdminName = queryResult.rows[0].admin_user_name
         }
-    });
-});
+        res.redirect('/adminView')
+    })
+})
+
+
+app.route("/adminView").get(function (req, res) {
+    if (!req.session.isAdminAuthenticated) {
+        res.render('adminLogin')
+    } else {
+
+        client.query("select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id", function (err, queryResults) {
+
+            let userPostDetails = queryResults.rows
+
+            let adminDetails = {
+                adminId: req.session.loggedAdminId,
+                adminName: req.session.loggedAdminName
+            }
+            res.render('adminView', { userPostDetails, adminDetails })
+        })
+    }
+})
+
 
 // --------------------------------------------------------
 //                      POST ROUTES
@@ -304,6 +333,18 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
     });
 });
 
+
+app.post("/logoutUser", function (req, res) {
+    req.session.destroy(function (err) {
+        if (err) {
+            // If there was an error, send a server error response
+            res.status(500).send({ success: false, error: err });
+        } else {
+            // Otherwise, send a success response
+            res.status(400).redirect('/login')
+        }
+    });
+});
 
 
 
