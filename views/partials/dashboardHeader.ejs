@@ -9,9 +9,11 @@
                     <li><a href="#">Contact</a></li>
                     <li><a href="#">About us</a></li>
                     <li>
-                        <a href="">
+                        <a id="logout-user" href="">
                             <i class="fa fa-user-circle" aria-hidden="true">
-                                <span data-toggle="tooltip" data-placement="bottom" title="Logout" href="logout.php" id="displayUserName"><%= userDetails.userName %>
+                                <span data-toggle="tooltip" data-placement="bottom" title="Logout" href="/logoutUser"
+                                    id="displayUserName">
+                                    <%= userDetails.userName %>
                                 </span>
                             </i>
                         </a>
@@ -19,3 +21,26 @@
                 </ul>
             </div>
         </div>
+
+        <!-- Jquery CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <!-- <script src='script.js'></script> -->
+        <script src="../../script/script.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#logout-user').click(function () {
+                    let userSelection = confirm('Are you sure to logout?')
+                    if (userSelection) {
+                        $.ajax({
+                            method: 'post',
+                            url: '/logoutUser',
+                            success: function (response) {
+                            }
+                        })
+                    } else {
+                        return false;
+                    }
+                })
+            })
+        </script>

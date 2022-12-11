@@ -48,6 +48,15 @@
                 $("#login_form").submit(function (e) {
                     e.preventDefault();
                 });
+                var emailRegex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+                var email = $("#userEmail").val().trim();
+                if (!email.match(emailRegex)) {
+                    // If the email is not valid, display an error message
+                    alert('Please enter a valid email address');
+
+                    // Prevent the form from being submitted
+                    e.preventDefault();
+                }
                 let userPassword = $('#userPassword').val();
                 var flag = true;
                 if ($('#userPassword').val().length === 0) {
@@ -56,7 +65,7 @@
                     alert('Password length too small');
                     $('#userPassword').val("");
                 } else {
-                    let email = $("#userEmail").val().trim();
+                    // let email = $("#userEmail").val().trim();
                     let password = $("#userPassword").val().trim();
                     // Make an AJAX request to the server
                     $.ajax({

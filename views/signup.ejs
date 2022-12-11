@@ -12,7 +12,8 @@
                     <h2>Join the Community Now!</h2>
                     <form autocomplete="off" action="" method="post">
                         <input id="username" name="username" type="text" placeholder="Enter Name" required>
-                        <input id="useremail" name="useremail" type="email" placeholder="Enter Email" required>
+                        <input id="useremail" name="useremail" type="email" placeholder="Enter Email"
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
 
                         <div class="wrapper">
                             <input id="newPassword" name="userpass" type="password" placeholder="Enter Password">
@@ -60,32 +61,44 @@
                     $('#confirmPassword').val("");
                     flag = false;
                 } else {
-                    alert("Are you sure, you want to submit?");
-                    let name = $("#username").val().trim();
-                    let email = $("#useremail").val().trim();
-                    let password = $("#newPassword").val().trim();
-                    $.ajax({
-                        type: "post",
-                        url: "/userSignup",
-                        data: {
-                            name: name,
-                            email: email,
-                            password: password
-                        },
-                        success: function (response) {
-                            if (response === "Email already exist") {
-                                alert("Email already exist");
-                            }
-                            if (response === "Registration Successfull") {
-                                alert("Registration Successfull! Kindly Login");
-                                window.location.replace("/login");
-                            }
-                            if (response === "Some error has occurred!") {
-                                alert("Some error has occurred! Try again..")
-                            }
+                    var emailRegex = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+                    var email = $("#useremail").val().trim();
+                    if (!email.match(emailRegex)) {
+                        // If the email is not valid, display an error message
+                        alert('Please enter a valid email address');
 
-                        },
-                    });
+                        // Prevent the form from being submitted
+                        e.preventDefault();
+                    }
+                    let confirmSignup = confirm("Are you sure, you want to submit?");
+                    if (confirmSignup) {
+                        let name = $("#username").val().trim();
+                        let password = $("#newPassword").val().trim();
+                        $.ajax({
+                            type: "post",
+                            url: "/userSignup",
+                            data: {
+                                name: name,
+                                email: email,
+                                password: password
+                            },
+                            success: function (response) {
+                                if (response === "Email already exist") {
+                                    alert("Email already exist");
+                                }
+                                if (response === "Registration Successfull") {
+                                    alert("Registration Successfull! Kindly Login");
+                                    window.location.replace("/login");
+                                }
+                                if (response === "Some error has occurred!") {
+                                    alert("Some error has occurred! Try again..")
+                                }
+
+                            },
+                        });
+                    } else {
+                        return false;
+                    }
                 }
             })
         });
