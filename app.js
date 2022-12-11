@@ -1,6 +1,5 @@
 //jshint esversion:6
-
-// Importing required modules
+// Import the required packages and modules
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -9,22 +8,39 @@ const fs = require("fs")
 const fileupload = require("express-fileupload");
 const loadsh = require("lodash")
 const session = require('express-session');
+
+// Import the dotenv module to load environment variables from a .env file
 require("dotenv").config();
+
+// Import the async module to use asynchronous functions
 var async = require('async');
 
-// module for password hashing
-const bcrypt = require('bcrypt')
+// Import the bcrypt module to use password hashing functions
+const bcrypt = require('bcrypt');
 
-const saltRounds = 10
+// Set the number of salt rounds to use when hashing passwords
+const saltRounds = 10;
 
-// creating app instance
+// Create an app instance of the express web framework
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }))
 
-// Connecting to database
+// Use the body parser middleware to parse the request body
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Create a parser for application/x-www-form-urlencoded data
+var urlencodedparser = bodyParser.urlencoded({ extended: false });
+
+// Serve static files from the "public" directory
+app.use(express.static("public"));
+
+// Use the express-fileupload middleware to handle file uploads
+app.use(fileupload());
+
+// Set the view engine to use ejs templates
+app.set('view engine', 'ejs');
+
+// Connect to the database
 const pg = require('pg');
-const { result } = require("lodash");
-
 const client = new pg.Client({
     host: process.env.ADMIN_HOST,
     user: process.env.ADMIN_USER,
@@ -35,17 +51,18 @@ const client = new pg.Client({
     connectionTimeoutMillis: 0
 });
 
+// Connect to the database
 client.connect();
 
+// Log a message to the console when the connection is established
+console.log("Connected to the database");
 
-console.log("Connected");
-app.set('view engine', 'ejs');
+app.set('view engine', 'ejs'); // Set the view engine to be EJS
 
-
-app.use(bodyParser.urlencoded({ extended: true }));
-var urlencodedparser = bodyParser.urlencoded({ extended: false })
-app.use(express.static("public"));
-app.use(fileupload());
+app.use(bodyParser.urlencoded({ extended: true })); // Use body-parser to parse form data
+var urlencodedparser = bodyParser.urlencoded({ extended: false }) // Create a urlencoded parser
+app.use(express.static("public")); // Serve static files from the "public" directory
+app.use(fileupload()); // Use the fileupload middleware to handle file uploads
 
 // Use the express-session middleware to manage user sessions
 app.use(session({
@@ -257,22 +274,24 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
     // if file exists store it in myfile variable
     let myfile = req.files.thumbnail;
 
-    let uploadPath = __dirname + "/uploads/" + myfile.name;
-    console.log(uploadPath);
-
-
     // upload the moved file to imgur and recieve a callback
     imgur(myfile.data).then(data => {
+        // Read the post title and plant information from the request body
         let postTitle = req.body.postTitle.trim();
         let plantInformation = req.body.plantInformation.trim();
+
+        // Read the ID of the logged-in user from the session data
         let postAuthorId = req.session.loggedUserId
+
+        // Read the link to the uploaded image from the data returned by imgur
         let postImageReference = data.link
 
-        let insertQuery = `Insert into PostInfo(post_title, post_description, post_author_id, post_image_reference) values('${postTitle}', '${plantInformation}', ${postAuthorId}, '${postImageReference}')`
 
-        console.log(insertQuery);
 
-        client.query(insertQuery, function (err, results) {
+        const insertQuery = 'INSERT INTO PostInfo(post_title, post_description, post_author_id, post_image_reference) VALUES($1, $2, $3, $4)';
+
+        // Use the client to execute the query with the provided parameters
+        client.query(insertQuery, [postTitle, plantInformation, postAuthorId, postImageReference], function (err, results) {
             if (err) {
                 // Handle any errors that occurred during the query
                 console.error(err);
@@ -280,7 +299,8 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
                 // Send a response to the client
                 res.redirect("/home")
             }
-        })
+        });
+
     });
 });
 
