@@ -173,7 +173,8 @@ app.get("/posts/:postId", function (req, res) {
                 // Otherwise, render the posts page with the data received from the database
                 let postResult = result.rows[0];
                 
-                let shareIntroText = "Found this informative article on GreenYard Check this out now ".replaceAll(" ","%20")
+                let shareIntroText = "Found this informative article on GreenYard Check this out now "
+                shareIntroText=shareIntroText.replace(/\s/g, "%20")
                 let shareDataLink = "http://greenyard.onrender.com/posts/"
                 let shareData = "whatsapp://send?text=" + shareIntroText + shareDataLink + result.rows[0].post_id
                 res.render("posts", { postResult, userDetails, shareData });
