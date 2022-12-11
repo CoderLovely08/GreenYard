@@ -1,0 +1,33 @@
+<%- include("partials/header") -%>
+    <%- include("partials/dashboardHeader") -%>
+        <div class="container">
+            <div class="row border border-secondary ">
+                <div class="post-design col-lg-4 shadow p-3 mb-5 bg-white rounded text-center">
+                    <br>
+                    <img src=<%=postResult.post_image_reference %> class=" img-thumbnail img-fluid rounded " width="500"
+                    height='500' alt=<%= postResult.post_title %>>
+
+                        <br>
+                        <button id="download-button"> Download PDF</button>
+
+                </div>
+                <div class="col-lg">
+                    <br>
+                    <h2 class="text-left">
+                        <%= postResult.post_title %>
+                    </h2>
+                    <strong>Author: </strong> <strong><u><%= postResult.user_name %></u></strong>
+                    <br>
+                    <strong>Description:</strong>
+                    <p>
+                        <%= postResult.post_description %>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jquery CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script>
+
+        </script>

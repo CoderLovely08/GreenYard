@@ -46,8 +46,10 @@ app.use(session({
 }));
 
 
+
 app.get("/", function (req, res) {
-    res.render("signup");
+    if (req.session.authenticated) res.redirect('/home')
+    else res.render("signup");
 });
 
 app.get("/login", function (req, res) {
@@ -55,21 +57,42 @@ app.get("/login", function (req, res) {
 })
 
 app.get("/home", function (req, res, next) {
+    client.query("Select * from PostInfo", function (err, result) {
+        let postDetails = result.rows
+        let userDetails = {
+            userName: req.session.loggedUserName,
+            userEmail: req.session.loggedUserEmail
+        }
+        res.render('home', { userDetails, postDetails });
+    })
+})
+
+app.get("/addPlant", function (req, res) {
     let userDetails = {
         userName: req.session.loggedUserName,
         userEmail: req.session.loggedUserEmail
     }
-    res.render('home', { userDetails });
-})
-
-app.get("/addPlant", function (req, res) {
-    res.render("upload")
+    res.render("upload", { userDetails })
 })
 
 app.get("/forgotPassword", function (req, res) {
     res.render("passwordReset")
 })
 
+app.get("/posts/:postId", function (req, res) {
+    let userDetails = {
+        userName: req.session.loggedUserName,
+        userEmail: req.session.loggedUserEmail
+    }
+
+    const postId = req.params.postId[0];
+    console.log(postId);
+    client.query("select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id where post_id = $1", [postId], function (err, result) {
+        let postResult = result.rows[0];
+        console.log(postResult.post_title);
+        res.render("posts", { postResult, userDetails })
+    });
+})
 
 // --------------------------------------------------------
 //                      POST ROUTES
@@ -140,7 +163,7 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
             });
 
             // Send the result to the client
-            res.send({ success: false, error: "Invalid username or password" });
+            // res.send({ success: false, error: "Invalid username or password" });
         }
     });
 });
@@ -178,7 +201,7 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
                     console.error(err);
                 } else {
                     // Send a response to the client
-                    res.render("home")
+                    res.redirect("/home")
                 }
             })
         });

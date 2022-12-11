@@ -8,6 +8,12 @@ let username = "sahil@gmail.com"
 let userPassword = "sahil@123"
 
 // Use a parameterized query to avoid SQL injection vulnerabilities
-client.query("Insert into PostInfo(post_title, post_description, post_author_id, post_image_reference) values('Money plant', 'this is a money plant', 4, 'https://i.imgur.com/npPXSnL.jpg')", function (err, result) {
-    console.log(err);
+client.query("select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id where post_id = 3", function (err, result) {
+    let postDetails = result.rows
+    console.log(postDetails[0]);
+    // let userDetails = {
+    //     userName: req.session.loggedUserName,
+    //     userEmail: req.session.loggedUserEmail
+    // }
+    // res.render('home', { userDetails, postDetails });
 })
