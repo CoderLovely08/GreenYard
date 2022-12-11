@@ -60,98 +60,98 @@ app.use(session({
 app.get("/", function (req, res) {
     // Check if the user is authenticated
     if (req.session.authenticated) {
-      // If the user is authenticated, redirect to the home page
-      res.redirect('/home');
+        // If the user is authenticated, redirect to the home page
+        res.redirect('/home');
     } else {
-      // If the user is not authenticated, render the signup page
-      res.render("signup");
+        // If the user is not authenticated, render the signup page
+        res.render("signup");
     }
-  });
-  
-  app.get("/login", function (req, res) {
+});
+
+app.get("/login", function (req, res) {
     // Check if the user is authenticated
     if (req.session.authenticated) {
-      // If the user is authenticated, redirect to the home page
-      res.redirect('/home')
+        // If the user is authenticated, redirect to the home page
+        res.redirect('/home')
     } else {
-      // If the user is not authenticated, render the login page
-      res.render("login")
+        // If the user is not authenticated, render the login page
+        res.render("login")
     }
-  })
-  
-  app.get("/home", function (req, res, next) {
+})
+
+app.get("/home", function (req, res, next) {
     // Check if the user is authenticated
     if (!req.session.authenticated) {
-      // If the user is not authenticated, redirect to the login page
-      res.redirect('login')
+        // If the user is not authenticated, redirect to the login page
+        res.redirect('login')
     } else {
-      // If the user is authenticated, query the database to get the post and user details
-      client.query(
-        "select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id ",
-        function (err, result) {
-          // Check for errors
-          if (err) {
-            // If there was an error, send a server error response
-            res.status(500).send('Error querying database: ' + err);
-          } else {
-            // Otherwise, render the home page with the data received from the database
-            let postDetails = result.rows;
-            let userDetails = {
-              userName: req.session.loggedUserName,
-              userEmail: req.session.loggedUserEmail,
-            };
-            res.render('home', { userDetails, postDetails });
-          }
-        }
-      );
+        // If the user is authenticated, query the database to get the post and user details
+        client.query(
+            "select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id ",
+            function (err, result) {
+                // Check for errors
+                if (err) {
+                    // If there was an error, send a server error response
+                    res.status(500).send('Error querying database: ' + err);
+                } else {
+                    // Otherwise, render the home page with the data received from the database
+                    let postDetails = result.rows;
+                    let userDetails = {
+                        userName: req.session.loggedUserName,
+                        userEmail: req.session.loggedUserEmail,
+                    };
+                    res.render('home', { userDetails, postDetails });
+                }
+            }
+        );
     }
-  });
-  
+});
 
-  app.get("/addPlant", function (req, res) {
+
+app.get("/addPlant", function (req, res) {
     // Get the logged-in user's details
     let userDetails = {
-      userName: req.session.loggedUserName,
-      userEmail: req.session.loggedUserEmail
+        userName: req.session.loggedUserName,
+        userEmail: req.session.loggedUserEmail
     };
-  
+
     // Render the upload page with the user's details
     res.render("upload", { userDetails });
-  });
-  
-  app.get("/forgotPassword", function (req, res) {
+});
+
+app.get("/forgotPassword", function (req, res) {
     // Render the password reset page
     res.render("passwordReset");
-  });
-  
-  app.get("/posts/:postId", function (req, res) {
+});
+
+app.get("/posts/:postId", function (req, res) {
     // Get the logged-in user's details
     let userDetails = {
-      userName: req.session.loggedUserName,
-      userEmail: req.session.loggedUserEmail
+        userName: req.session.loggedUserName,
+        userEmail: req.session.loggedUserEmail
     };
-  
+
     // Get the post ID from the route parameters
     const postId = req.params.postId[0];
-  
+
     // Query the database to get the details of the post with the specified ID
     client.query(
-      "select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id where post_id = $1",
-      [postId],
-      function (err, result) {
-        // Check for errors
-        if (err) {
-          // If there was an error, send a server error response
-          res.status(500).send('Error querying database: ' + err);
-        } else {
-          // Otherwise, render the posts page with the data received from the database
-          let postResult = result.rows[0];
-          res.render("posts", { postResult, userDetails });
+        "select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id where post_id = $1",
+        [postId],
+        function (err, result) {
+            // Check for errors
+            if (err) {
+                // If there was an error, send a server error response
+                res.status(500).send('Error querying database: ' + err);
+            } else {
+                // Otherwise, render the posts page with the data received from the database
+                let postResult = result.rows[0];
+                res.render("posts", { postResult, userDetails });
+            }
         }
-      }
     );
-  });
-  
+});
+
 
 app.post("/logoutUser", function (req, res) {
     req.session.destroy(function (err) {
@@ -173,51 +173,48 @@ app.post("/userSignup", urlencodedparser, function (req, res) {
     let userName = req.body.name.trim();
     let userEmail = req.body.email.trim();
     let userPassword = req.body.password.trim();
-  
+
     // Use a parameterized query to check if the email already exists in the database
     client.query("Select * from UserInfo where user_email=$1", [userEmail], function (err, result) {
-      if (result.rows.length == 1) {
-        // If the email already exists, send a response indicating that the email is already in use
-        res.send("Email already exist");
-      } else {
-        // If the email does not already exist, hash the user's password
-        bcrypt.hash(userPassword, saltRounds, (err, hash) => {
-          // Use a parameterized query to insert the user's details into the database
-          client.query("INSERT INTO userinfo(user_name,user_email, user_password) VALUES($1,$2,$3)", [userName, userEmail, hash], function (err, result) {
-            // Check for errors
-            if (!err) {
-              // If there was no error, send a response indicating that the registration was successful
-              res.send('Registration Successfull')
-            } else {
-              // If there was an error, send a response indicating that there was an error
-              res.send("Some error has occurred!");
-            }
-          });
-        });
-      }
+        if (result.rows.length == 1) {
+            // If the email already exists, send a response indicating that the email is already in use
+            res.send("Email already exist");
+        } else {
+            // If the email does not already exist, hash the user's password
+            bcrypt.hash(userPassword, saltRounds, (err, hash) => {
+                // Use a parameterized query to insert the user's details into the database
+                client.query("INSERT INTO userinfo(user_name,user_email, user_password) VALUES($1,$2,$3)", [userName, userEmail, hash], function (err, result) {
+                    // Check for errors
+                    if (!err) {
+                        // If there was no error, send a response indicating that the registration was successful
+                        res.send('Registration Successfull')
+                    } else {
+                        // If there was an error, send a response indicating that there was an error
+                        res.send("Some error has occurred!");
+                    }
+                });
+            });
+        }
     });
-  });
-
-  
+});
 
 
-  app.post("/userLogin", urlencodedparser, async function (req, res) {
+
+
+app.post("/userLogin", urlencodedparser, async function (req, res) {
     // Retrieve the email address and password from the request body
     let username = req.body.userEmail.trim();
     let userPassword = req.body.userPassword.trim();
 
     // Use a parameterized query to avoid SQL injection vulnerabilities
-    client.query("Select * from UserInfo where user_email=$1", [username], function (err, result) {
+    client.query("Select * from UserInfo where user_email=$1 limit 1", [username], function (err, queryResult) {
         if (err) {
             // Handle the error
             console.error(err); // Log the error
             res.send({ success: false, error: err });
-        } else if (result.rows.length != 0) {
-            // Log the result for debugging purposes
-            console.log(result.rows);
-
+        } else if (queryResult.rows.length != 0) {
             // Retrieve the hashed password for the user
-            let hashedPassword = result.rows[0].user_password
+            let hashedPassword = queryResult.rows[0].user_password
 
             // Compare the provided password to the hashed password using bcrypt
             bcrypt.compare(userPassword, hashedPassword, function (err, result) {
@@ -228,12 +225,13 @@ app.post("/userSignup", urlencodedparser, function (req, res) {
                 }
 
                 if (result) {
+                    console.log(queryResult.rows[0]);
                     // If the passwords match, log the user in by storing their
                     // user ID, email address, and username in the session
                     req.session.authenticated = true;
-                    req.session.loggedUserId = result.rows[0].user_id
-                    req.session.loggedUserName = result.rows[0].user_name
-                    req.session.loggedUserEmail = result.rows[0].user_email
+                    req.session.loggedUserId = queryResult.rows[0].user_id
+                    req.session.loggedUserName = queryResult.rows[0].user_name
+                    req.session.loggedUserEmail = queryResult.rows[0].user_email
 
                     // Send a success response back to the user
                     res.send({ success: true, result: "Login Successfull" });
