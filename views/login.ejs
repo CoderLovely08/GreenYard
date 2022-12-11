@@ -56,40 +56,41 @@
 
                     // Prevent the form from being submitted
                     e.preventDefault();
-                }
-                let userPassword = $('#userPassword').val();
-                var flag = true;
-                if ($('#userPassword').val().length === 0) {
-                    alert("Password can't be empty!");
-                } else if ($('#userPassword').val().length < 8) {
-                    alert('Password length too small');
-                    $('#userPassword').val("");
                 } else {
-                    // let email = $("#userEmail").val().trim();
-                    let password = $("#userPassword").val().trim();
-                    // Make an AJAX request to the server
-                    $.ajax({
-                        url: "/userLogin",
-                        method: "POST",
-                        data: {
-                            userEmail: email,
-                            userPassword: password
-                        },
-                        success: function (response) {
-                            // Check if the request was successful
-                            if (response.success) {
-                                alert("Login Successfull")
-                                // Use the response data
-                                console.log(response.result);
-                                window.location.replace("/home");
-                            } else {
-                                alert("Invalid Credentials! Try Again...")
-                                // Handle the error
-                                console.error(response.error);
+                    let userPassword = $('#userPassword').val();
+                    var flag = true;
+                    if ($('#userPassword').val().length === 0) {
+                        alert("Password can't be empty!");
+                    } else if ($('#userPassword').val().length < 8) {
+                        alert('Password length too small');
+                        $('#userPassword').val("");
+                    } else {
+                        let email = $("#userEmail").val().trim();
+                        let password = $("#userPassword").val().trim();
+                        // Make an AJAX request to the server
+                        $.ajax({
+                            url: "/userLogin",
+                            method: "POST",
+                            data: {
+                                userEmail: email,
+                                userPassword: password
+                            },
+                            success: function (response) {
+                                // Check if the request was successful
+                                if (response.success) {
+                                    alert("Login Successfull")
+                                    // Use the response data
+                                    console.log(response.result);
+                                    window.location.replace("/home");
+                                } else {
+                                    alert("Invalid Credentials! Try Again...")
+                                    // Handle the error
+                                    console.error(response.error);
+                                }
                             }
-                        }
-                    });
+                        });
 
+                    }
                 }
             })
         });
