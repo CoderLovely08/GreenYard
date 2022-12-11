@@ -235,13 +235,15 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
 
                     // Send a success response back to the user
                     res.send({ success: true, result: "Login Successfull" });
+                    res.end();
                 } else {
                     // If the passwords don't match, display an error message
                     res.send({ success: false, error: "Invalid username or password" });
+                    res.end();
                 }
             });
         }
-    });
+    });    
 });
 
 
