@@ -260,7 +260,7 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
     let uploadPath = __dirname + "/uploads/" + myfile.name;
     // move the file to uploads folder for temp storage
     myfile.mv(uploadPath, function (err) {
-        // if (err) console.log("Error!");
+        if (err) console.log(err);
 
         // upload the moved file to imgur and recieve a callback
         imgur(fs.readFileSync(uploadPath)).then(data => {
@@ -280,12 +280,12 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
                 } else {
                     // Send a response to the client
                     res.redirect("/home")
+                    // removing the file from our temporary uploads folder
+                    fs.unlinkSync(uploadPath);
                 }
             })
         });
 
-        // removing the file from our temporary uploads folder
-        fs.unlinkSync(uploadPath);
 
     });
 });
