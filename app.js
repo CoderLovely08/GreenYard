@@ -53,11 +53,12 @@ app.get("/", function (req, res) {
 });
 
 app.get("/login", function (req, res) {
-    res.render("login")
+    if (req.session.authenticated) res.redirect('/home')
+    else res.render("login")
 })
 
 app.get("/home", function (req, res, next) {
-    client.query("Select * from PostInfo", function (err, result) {
+    client.query("select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id ", function (err, result) {
         let postDetails = result.rows
         let userDetails = {
             userName: req.session.loggedUserName,
@@ -98,9 +99,9 @@ app.get("/posts/:postId", function (req, res) {
 //                      POST ROUTES
 // --------------------------------------------------------
 app.post("/userSignup", urlencodedparser, function (req, res) {
-    let userName = req.body.name;
-    let userEmail = req.body.email;
-    let userPassword = req.body.password;
+    let userName = req.body.name.trim();
+    let userEmail = req.body.email.trim();
+    let userPassword = req.body.password.trim();
 
     // check if email already exists
     let checkExistingEmail = `Select * from UserInfo where user_email = '${userEmail}'`
@@ -124,8 +125,8 @@ app.post("/userSignup", urlencodedparser, function (req, res) {
 
 // let result = await getData(username)
 app.post("/userLogin", urlencodedparser, async function (req, res) {
-    let username = req.body.userEmail;
-    let userPassword = req.body.userPassword;
+    let username = req.body.userEmail.trim();
+    let userPassword = req.body.userPassword.trim();
 
     // Use a parameterized query to avoid SQL injection vulnerabilities
     client.query("Select * from UserInfo where user_email=$1", [username], function (err, result) {
@@ -133,7 +134,7 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
             // Handle the error
             console.error(err); // Log the error
             res.send({ success: false, error: err });
-        } else {
+        } else if(result.rows.length!=0){
             // Log the result for debugging purposes
             console.log(result.rows);
 
@@ -161,9 +162,6 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
                     res.send({ success: false, error: "Invalid username or password" });
                 }
             });
-
-            // Send the result to the client
-            // res.send({ success: false, error: "Invalid username or password" });
         }
     });
 });
@@ -185,10 +183,9 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
 
         // upload the moved file to imgur and recieve a callback
         imgur(fs.readFileSync(uploadPath)).then(data => {
-            let postTitle = req.body.postTitle;
-            let plantInformation = req.body.plantInformation;
-            // let postAuthorId = req.session.loggedUserId
-            let postAuthorId = 4
+            let postTitle = req.body.postTitle.trim();
+            let plantInformation = req.body.plantInformation.trim();
+            let postAuthorId = req.session.loggedUserId
             let postImageReference = data.link
 
             let insertQuery = `Insert into PostInfo(post_title, post_description, post_author_id, post_image_reference) values('${postTitle}', '${plantInformation}', ${postAuthorId}, '${postImageReference}')`
@@ -212,6 +209,12 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
     });
 });
 
+
+
+
+app.use((req, res, next) => {
+    res.status(404).render('error');
+});
 
 
 app.listen(3000, function () {

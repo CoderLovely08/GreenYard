@@ -56,8 +56,8 @@
                     alert('Password length too small');
                     $('#userPassword').val("");
                 } else {
-                    let email = $("#userEmail").val();
-                    let password = $("#userPassword").val();
+                    let email = $("#userEmail").val().trim();
+                    let password = $("#userPassword").val().trim();
                     // Make an AJAX request to the server
                     $.ajax({
                         url: "/userLogin",
