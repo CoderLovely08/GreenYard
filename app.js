@@ -258,33 +258,35 @@ app.post("/uploadPost", urlencodedparser, async function (req, res) {
     let myfile = req.files.thumbnail;
 
     let uploadPath = __dirname + "/uploads/" + myfile.name;
+    console.log(uploadPath);
     // move the file to uploads folder for temp storage
     myfile.mv(uploadPath, function (err) {
         if (err) console.log(err);
+        res.redirect('/home')
 
         // upload the moved file to imgur and recieve a callback
-        imgur(fs.readFileSync(uploadPath)).then(data => {
-            let postTitle = req.body.postTitle.trim();
-            let plantInformation = req.body.plantInformation.trim();
-            let postAuthorId = req.session.loggedUserId
-            let postImageReference = data.link
+        // imgur(fs.readFileSync(uploadPath)).then(data => {
+        //     let postTitle = req.body.postTitle.trim();
+        //     let plantInformation = req.body.plantInformation.trim();
+        //     let postAuthorId = req.session.loggedUserId
+        //     let postImageReference = data.link
 
-            let insertQuery = `Insert into PostInfo(post_title, post_description, post_author_id, post_image_reference) values('${postTitle}', '${plantInformation}', ${postAuthorId}, '${postImageReference}')`
+        //     let insertQuery = `Insert into PostInfo(post_title, post_description, post_author_id, post_image_reference) values('${postTitle}', '${plantInformation}', ${postAuthorId}, '${postImageReference}')`
 
-            console.log(insertQuery);
+        //     console.log(insertQuery);
 
-            client.query(insertQuery, function () {
-                if (err) {
-                    // Handle any errors that occurred during the query
-                    console.error(err);
-                } else {
-                    // Send a response to the client
-                    res.redirect("/home")
-                    // removing the file from our temporary uploads folder
-                    fs.unlinkSync(uploadPath);
-                }
-            })
-        });
+        //     client.query(insertQuery, function () {
+        //         if (err) {
+        //             // Handle any errors that occurred during the query
+        //             console.error(err);
+        //         } else {
+        //             // Send a response to the client
+        //             res.redirect("/home")
+        //             // removing the file from our temporary uploads folder
+        //             fs.unlinkSync(uploadPath);
+        //         }
+        //     })
+        // });
 
 
     });
