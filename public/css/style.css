@@ -44,7 +44,7 @@ section .image-container img{
     position: relative;
     left: -5%;
     width: 100%;
-    height: auto;
+    /* height: auto; */
 }
 .signup-container input, .signup-container input:focus{
     border-radius: 12px;
@@ -117,6 +117,7 @@ label input[type="checkbox"]{
 #logo img{
     width: auto;
     height: auto;
+    max-width: 250px;
     margin: 4px 12px;
     padding: 10px;
     float: left;
@@ -298,3 +299,70 @@ label input[type="checkbox"]{
 .table tbody tr td a img{
     max-width: 100px;
 }
+/* Media query for screens with a width less than or equal to 480px */
+@media screen and (max-width: 480px) {
+    /* Make the two div elements take up the full width of the screen */
+    .image-container,.signup-container {
+      width: 100%;
+    }
+  }
+  
+  /* Media query for screens with a width greater than 480px */
+  
+  section {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Media query for screens with a width less than or equal to 768px */
+  @media screen and (max-width: 768px) {
+    section {
+      flex-direction: column;
+    }
+  }
+  
+
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .navigation-bar {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navigation-container {
+    width: 100%;
+  }
+  
+  .navigation-container ul {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navigation-container li {
+    display: inline-block;
+  }
+  
+  /* Media query for screens with a width less than or equal to 768px */
+  @media screen and (max-width: 768px) {
+    .navigation-container ul {
+      flex-direction: column;
+    }
+  
+    .navigation-container li {
+      text-align: center;
+    }
+  }
+  
+
+  .navbar-nav > li{
+    margin : 0 15px;
+  }
+  

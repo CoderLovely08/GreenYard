@@ -1,26 +1,55 @@
 <body>
     <div class="container">
-        <div class="navigation-bar">
+        <!-- <div class="navigation-bar">
             <div id="navigation-container">
-                <a href="/home" id="logo"><img src="../images/logo.png" width="100px" alt="" srcset=""></a>
+              <a href="/home" id="logo"><img src="../images/logo.png" width="100px" alt="" srcset=""></a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarLinks" aria-controls="navbarLinks" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarLinks">
                 <ul>
-                    <li><a href="/home">Home</a></li>
-                    <li><a href="#">Shop</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">About us</a></li>
-                    <li>
-                        <a id="logout-user" href="">
-                            <i class="fa fa-user-circle" aria-hidden="true">
-                                <span data-toggle="tooltip" data-placement="bottom" title="Logout" href="/logoutUser"
-                                    id="displayUserName">
-                                    <%= userDetails.userName %>
-                                </span>
-                            </i>
-                        </a>
-                    </li>
+                  <li><a href="/home">Home</a></li>
+                  <li><a href="#">Shop</a></li>
+                  <li><a href="#">Contact</a></li>
+                  <li><a href="#">About us</a></li>
+                  <li>
+                    <a id="logout-user" href="">
+                      <i class="fa fa-user-circle" aria-hidden="true">
+                        <span data-toggle="tooltip" data-placement="bottom" title="Logout" href="/logoutUser" id="displayUserName">
+                          <%= userDetails.userName %>
+                        </span>
+                      </i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div> -->
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a href="" class="navbar-brand"><a href="/home" id="logo"><img src="../images/logo.png" width="100px" alt="" srcset=""></a></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navToggle"
+                aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navToggle">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a href="/home">Home</a></li>
+                  <li class="nav-item"><a href="#">Shop</a></li>
+                  <li class="nav-item"><a href="#">Contact</a></li>
+                  <li class="nav-item"><a href="#">About us</a></li>
+                  <li class="nav-item">
+                    <a id="logout-user" href="">
+                      <i class="fa fa-user-circle" aria-hidden="true">
+                        <span data-toggle="tooltip" data-placement="bottom" title="Logout" href="/logoutUser" id="displayUserName">
+                          <%= userDetails.userName %>
+                        </span>
+                      </i>
+                    </a>
+                  </li>
                 </ul>
             </div>
-        </div>
+        </nav>
 
         <!-- Jquery CDN -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
