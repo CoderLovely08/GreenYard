@@ -174,18 +174,16 @@ app.post("/userSignup", urlencodedparser, function (req, res) {
     let userEmail = req.body.email.trim();
     let userPassword = req.body.password.trim();
   
-    // Query the database to check if the email already exists
-    let checkExistingEmail = `Select * from UserInfo where user_email = '${userEmail}' limit 1`;
-    client.query(checkExistingEmail, function (err, result) {
+    // Use a parameterized query to check if the email already exists in the database
+    client.query("Select * from UserInfo where user_email=$1", [userEmail], function (err, result) {
       if (result.rows.length == 1) {
         // If the email already exists, send a response indicating that the email is already in use
         res.send("Email already exist");
       } else {
         // If the email does not already exist, hash the user's password
         bcrypt.hash(userPassword, saltRounds, (err, hash) => {
-          // Insert the user's details into the database
-          let query = `INSERT INTO userinfo(user_name,user_email, user_password) VALUES('${userName}','${userEmail}','${hash}')`;
-          client.query(query, function (err, result) {
+          // Use a parameterized query to insert the user's details into the database
+          client.query("INSERT INTO userinfo(user_name,user_email, user_password) VALUES($1,$2,$3)", [userName, userEmail, hash], function (err, result) {
             // Check for errors
             if (!err) {
               // If there was no error, send a response indicating that the registration was successful
@@ -199,6 +197,7 @@ app.post("/userSignup", urlencodedparser, function (req, res) {
       }
     });
   });
+
   
 
 

@@ -42,11 +42,21 @@
                 let newPassword = $('#newPassword').val();
                 let confirmPassword = $('#confirmPassword').val();
                 var flag = true;
-                if ($('#username').val().length === 0) {
+
+                // define a regular expression for a valid name
+                var nameRegex = /^[a-zA-Z ]+$/;
+
+                // use the .val() method to get the value of the input field
+                var inputValue = $("#username").val();
+
+
+                if ($('#username').val().length <= 2) {
                     alert("Name can't be empty!");
                 } else if ($('#username').val().length > 20) {
                     alert("Name is too big!");
                     $('#username').val('');
+                } else if (!inputValue.match(nameRegex)) {
+                    alert("Enter a valid Name");
                 } else if ($('#useremail').val().length == 0) {
                     alert('Email cannot be empty!');
                 } else if ($('#newPassword').val().length != $('#confirmPassword').val().length) {
