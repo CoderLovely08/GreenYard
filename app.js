@@ -157,10 +157,10 @@ app.post("/logoutUser", function (req, res) {
     req.session.destroy(function (err) {
         if (err) {
             // If there was an error, send a server error response
-            // res.status(500).send({ success: false, error: err });
+            res.status(500).send({ success: false, error: err });
         } else {
             // Otherwise, send a success response
-            // res.status(400).redirect('/login')
+            res.status(400).redirect('/login')
         }
     });
 });
