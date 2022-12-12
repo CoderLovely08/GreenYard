@@ -17,28 +17,28 @@
                     <% for(let i=0; i<userPostDetails.length; i++){ %>
 
                         <tr>
-                            <td> <a id="post-id" href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                            <td> <a target="_blank" id="post-id" href=<%- "/posts/" +userPostDetails[i].post_id %>>
                                     <%= userPostDetails[i].post_id %>
                                 </a>
 
                             </td>
-                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                            <td> <a target="_blank" href=<%- "/posts/" +userPostDetails[i].post_id %>>
                                     <%= userPostDetails[i].post_title %>
                                 </a>
 
                             </td>
-                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>> <img
+                            <td> <a target="_blank" href=<%- "/posts/" +userPostDetails[i].post_id %>> <img
                                         src="<%= userPostDetails[i].post_image_reference %>"
                                         alt=<%=userPostDetails[i].post_title %>>
                                 </a>
                             </td>
-                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                            <td> <a target="_blank" href=<%- "/posts/" +userPostDetails[i].post_id %>>
                                     <%= userPostDetails[i].post_author_name %>
                                 </a>
 
                             </td>
-                            <td> <a href=<%- "/posts/" +userPostDetails[i].post_id %>>
-                                    <%= userPostDetails[i].post_description.substring(0,100) %> <a href=<%- "/posts/"
+                            <td> <a target="_blank" href=<%- "/posts/" +userPostDetails[i].post_id %>>
+                                    <%= userPostDetails[i].post_description.substring(0,100) %> <a target="_blank" href=<%- "/posts/"
                                             +userPostDetails[i].post_id %>>...Read more</a>
                                 </a>
 

@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const imgur = require('imgur-uploader');
-const fs = require("fs")
+// const fs = require("fs")
 const fileupload = require("express-fileupload");
 const loadsh = require("lodash")
 const session = require('express-session');
@@ -34,7 +34,7 @@ var urlencodedparser = bodyParser.urlencoded({ extended: false });
 app.use(express.static("public"));
 
 // Use the express-fileupload middleware to handle file uploads
-app.use(fileupload());
+// app.use(fileupload());
 
 // Set the view engine to use ejs templates
 app.set('view engine', 'ejs');
@@ -126,14 +126,20 @@ app.get("/home", function (req, res, next) {
 
 
 app.get("/addPlant", function (req, res) {
-    // Get the logged-in user's details
-    let userDetails = {
-        userName: req.session.loggedUserName,
-        userEmail: req.session.loggedUserEmail
-    };
+    // Check if the user is authenticated
+    if (!req.session.authenticated) {
+        // If the user is not authenticated, redirect to the login page
+        res.redirect('login')
+    } else {
+        // Get the logged-in user's details
+        let userDetails = {
+            userName: req.session.loggedUserName,
+            userEmail: req.session.loggedUserEmail
+        };
 
-    // Render the upload page with the user's details
-    res.render("upload", { userDetails });
+        // Render the upload page with the user's details
+        res.render("upload", { userDetails });
+    }
 });
 
 app.get("/forgotPassword", function (req, res) {
@@ -150,37 +156,46 @@ app.get("/forgotPassword", function (req, res) {
 //                            GET 
 // --------------------------------------------------------
 app.get("/posts/:postId", function (req, res) {
-    
-    // Get the logged-in user's details
-    let userDetails = {
-        userName: req.session.loggedUserName,
-        userEmail: req.session.loggedUserEmail
-    };
+    if (!req.session.authenticated) {
+        // If the user is not authenticated, redirect to the login page
+        res.redirect('/login')
+    } else {
+        // Get the logged-in user's details
+        let userDetails = {
+            userName: req.session.loggedUserName,
+            userEmail: req.session.loggedUserEmail
+        };
 
-    // Get the post ID from the route parameters
-    const postId = req.params.postId[0];
+        // Get the post ID from the route parameters
+        let postId = req.params.postId;
+        postId = postId.split("-")[0];
 
-    // Query the database to get the details of the post with the specified ID
-    client.query(
-        "select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id where post_id = $1",
-        [postId],
-        function (err, result) {
-            // Check for errors
-            if (err) {
-                // If there was an error, send a server error response
-                res.status(500).send('Error querying database: ' + err);
-            } else {
-                // Otherwise, render the posts page with the data received from the database
-                let postResult = result.rows[0];
-                
-                let shareIntroText = "Found this informative article on GreenYard Check this out now "
-                shareIntroText=shareIntroText.replace(/\s/g, "%20")
-                let shareDataLink = "http://greenyard.onrender.com/posts/"
-                let shareData = "whatsapp://send?text=" + shareIntroText + shareDataLink + result.rows[0].post_id
-                res.render("posts", { postResult, userDetails, shareData });
+        // Query the database to get the details of the post with the specified ID
+        client.query(
+            "select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id where post_id = $1",
+            [postId],
+            function (err, result) {
+                // Check for errors
+                if (err) {
+                    // If there was an error, send a server error response
+                    res.status(404).render('error');
+                } else {
+                    // Otherwise, render the posts page with the data received from the database
+                    if (result.rows.length != 0) {
+                        let postResult = result.rows[0];
+                        // console.log(result);
+                        let shareIntroText = "Found this informative article on GreenYard Check this out now "
+                        shareIntroText = shareIntroText.replace(/\s/g, "%20")
+                        let shareDataLink = "http://greenyard.onrender.com/posts/"
+                        let shareData = "whatsapp://send?text=" + shareIntroText + shareDataLink + result.rows[0].post_id
+                        res.render("posts", { postResult, userDetails, shareData });
+                    } else {
+                        res.status(404).render('error');
+                    }
+                }
             }
-        }
-    );
+        );
+    }
 });
 
 
@@ -324,43 +339,48 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
 
 
 
-app.post("/uploadPost", urlencodedparser, async function (req, res) {
+app.post("/uploadPost", urlencodedparser, function (req, res) {
+    if (!req.session.authenticated) {
+        // If the user is not authenticated, redirect to the login page
+        res.redirect('login')
+    } else {
+        // check if files are not empty
+        if (!req.files) {
+            return res.status(400).send("No files Found!");
+        }
+        // if file exists store it in myfile variable
+        let myfile = req.files.thumbnail;
+        console.log(myfile);
 
-    // check if files are not empty
-    if (!req.files) {
-        return res.status(400).send("No files Found!");
-    }
-    // if file exists store it in myfile variable
-    let myfile = req.files.thumbnail;
+        // upload the moved file to imgur and recieve a callback
+        imgur(myfile.data).then(data => {
+            // Read the post title and plant information from the request body
+            let postTitle = req.body.postTitle.trim();
+            let plantInformation = req.body.plantInformation.trim();
 
-    // upload the moved file to imgur and recieve a callback
-    imgur(myfile.data).then(data => {
-        // Read the post title and plant information from the request body
-        let postTitle = req.body.postTitle.trim();
-        let plantInformation = req.body.plantInformation.trim();
+            // Read the ID of the logged-in user from the session data
+            let postAuthorId = req.session.loggedUserId
 
-        // Read the ID of the logged-in user from the session data
-        let postAuthorId = req.session.loggedUserId
-
-        // Read the link to the uploaded image from the data returned by imgur
-        let postImageReference = data.link
+            // Read the link to the uploaded image from the data returned by imgur
+            let postImageReference = data.link
 
 
 
-        const insertQuery = 'INSERT INTO PostInfo(post_title, post_description, post_author_id, post_image_reference) VALUES($1, $2, $3, $4)';
+            const insertQuery = 'INSERT INTO PostInfo(post_title, post_description, post_author_id, post_image_reference) VALUES($1, $2, $3, $4)';
 
-        // Use the client to execute the query with the provided parameters
-        client.query(insertQuery, [postTitle, plantInformation, postAuthorId, postImageReference], function (err, results) {
-            if (err) {
-                // Handle any errors that occurred during the query
-                console.error(err);
-            } else {
-                // Send a response to the client
-                res.redirect("/home")
-            }
+            // Use the client to execute the query with the provided parameters
+            client.query(insertQuery, [postTitle, plantInformation, postAuthorId, postImageReference], function (err, results) {
+                if (err) {
+                    // Handle any errors that occurred during the query
+                    console.error(err);
+                } else {
+                    // Send a response to the client
+                    res.redirect("/home")
+                }
+            });
+
         });
-
-    });
+    }
 });
 
 
