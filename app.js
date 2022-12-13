@@ -98,7 +98,7 @@ app.get("/login", function (req, res) {
 
 app.get("/home", function (req, res, next) {
     // Check if the user is authenticated
-    if (!req.session.authenticated) {
+    if (!req.session.authenticated || !req.session.isAdminAuthenticated) {
         // If the user is not authenticated, redirect to the login page
         res.redirect('login')
     } else {
@@ -113,8 +113,9 @@ app.get("/home", function (req, res, next) {
                 } else {
                     // Otherwise, render the home page with the data received from the database
                     let postDetails = result.rows;
+                    let loggedUserName = req.session.authenticated == true ? req.session.loggedUserName : req.session.loggedAdminName
                     let userDetails = {
-                        userName: req.session.loggedUserName,
+                        userName: loggedUserName,
                         userEmail: req.session.loggedUserEmail,
                     };
                     res.render('home', { userDetails, postDetails });
