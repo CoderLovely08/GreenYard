@@ -130,5 +130,5 @@ dist
 .pnp.*
 
 # my custom files
-test
+test.js
 tempCodeRunnerFile
