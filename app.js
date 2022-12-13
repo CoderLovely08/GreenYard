@@ -61,7 +61,7 @@ app.use(session({
 
 app.get("/", function (req, res) {
     // Check if the user is authenticated
-    if (req.session.authenticated) {
+    if (req.session.isUserAuthenticated || req.session.isAdminAuthenticated) {
         // If the user is authenticated, redirect to the home page
         res.redirect('/home');
     } else {
@@ -72,7 +72,7 @@ app.get("/", function (req, res) {
 
 app.get("/login", function (req, res) {
     // Check if the user is authenticated
-    if (req.session.authenticated) {
+    if (req.session.isUserAuthenticated) {
         // If the user is authenticated, redirect to the home page
         res.redirect('/home')
     } else {
@@ -83,10 +83,7 @@ app.get("/login", function (req, res) {
 
 app.get("/home", function (req, res, next) {
     // Check if the user is authenticated
-    if (!req.session.authenticated || !req.session.isAdminAuthenticated) {
-        // If the user is not authenticated, redirect to the login page
-        res.redirect('login')
-    } else {
+    if (req.session.isUserAuthenticated || req.session.isAdminAuthenticated) {
         // If the user is authenticated, query the database to get the post and user details
         client.query(
             "select p.post_id,p.post_title,p.post_description, p.post_image_reference, u.user_name from PostInfo p join UserInfo u on p.post_author_id = u.user_id ",
@@ -98,7 +95,7 @@ app.get("/home", function (req, res, next) {
                 } else {
                     // Otherwise, render the home page with the data received from the database
                     let postDetails = result.rows;
-                    let loggedUserName = req.session.authenticated == true ? req.session.loggedUserName : req.session.loggedAdminName
+                    let loggedUserName = req.session.isUserAuthenticated == true ? req.session.loggedUserName : req.session.loggedAdminName
                     let userDetails = {
                         userName: loggedUserName,
                         userEmail: req.session.loggedUserEmail,
@@ -107,13 +104,15 @@ app.get("/home", function (req, res, next) {
                 }
             }
         );
+    } else {
+        res.redirect('/login');
     }
 });
 
 
 app.get("/addPlant", function (req, res) {
     // Check if the user is authenticated
-    if (!req.session.authenticated) {
+    if (!req.session.isUserAuthenticated) {
         // If the user is not authenticated, redirect to the login page
         res.redirect('login')
     } else {
@@ -142,7 +141,7 @@ app.get("/forgotPassword", function (req, res) {
 //                            GET 
 // --------------------------------------------------------
 app.get("/posts/:postId", function (req, res) {
-    if (!req.session.authenticated) {
+    if (!req.session.isUserAuthenticated) {
         // If the user is not authenticated, redirect to the login page
         res.redirect('/login')
     } else {
@@ -305,7 +304,7 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
                     console.log(queryResult.rows[0]);
                     // If the passwords match, log the user in by storing their
                     // user ID, email address, and username in the session
-                    req.session.authenticated = true;
+                    req.session.isUserAuthenticated = true;
                     req.session.loggedUserId = queryResult.rows[0].user_id
                     req.session.loggedUserName = queryResult.rows[0].user_name
                     req.session.loggedUserEmail = queryResult.rows[0].user_email
@@ -326,7 +325,7 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
 
 
 app.post("/uploadPost", urlencodedparser, function (req, res) {
-    if (!req.session.authenticated) {
+    if (!req.session.isUserAuthenticated) {
         // If the user is not authenticated, redirect to the login page
         res.redirect('login')
     } else {
