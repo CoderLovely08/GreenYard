@@ -24,21 +24,6 @@ const saltRounds = 10;
 // Create an app instance of the express web framework
 const app = express();
 
-// Use the body parser middleware to parse the request body
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Create a parser for application/x-www-form-urlencoded data
-var urlencodedparser = bodyParser.urlencoded({ extended: false });
-
-// Serve static files from the "public" directory
-app.use(express.static("public"));
-
-// Use the express-fileupload middleware to handle file uploads
-// app.use(fileupload());
-
-// Set the view engine to use ejs templates
-app.set('view engine', 'ejs');
-
 // Connect to the database
 const pg = require('pg');
 const client = new pg.Client({
