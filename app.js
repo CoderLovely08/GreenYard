@@ -127,11 +127,48 @@ app.get("/addPlant", function (req, res) {
     }
 });
 
-app.get("/forgotPassword", function (req, res) {
-    // Render the password reset page
-    res.render("passwordReset");
-});
+app.route("/forgotPassword")
+    .get(function (req, res) {
+        // Render the password reset page
+        res.render("passwordReset");
+    })
+    .post(function (req, res) {
+        let userEmail = req.body.email;
+        client.query("Select * from UserInfo where user_email = $1", [userEmail], function (err, queryResult) {
+            if (err) {
+                console.log("Error querying database: " + err);
+            } else {
+                if (queryResult.rows.length == 1) {
+                    req.session.isResetAuthorised = true
+                    req.session.resetEmailId = queryResult.rows[0].user_email
+                    res.redirect("/resetPassword")
+                } else res.status(200).send(true)
+            }
+        })
+    });
 
+
+app.route("/resetPassword")
+    .get(function (req, res) {
+        console.log(req.session);
+        res.render('resetPassword');
+    })
+    .post(function (req, res) {
+        if (req.session.isResetAuthorised) {
+            let confirmPassword = req.body.password
+            bcrypt.hash(confirmPassword, saltRounds, (err, hashedPassword) => {
+                if (!err) {
+                    client.query("Update UserInfo set user_password = $1 where user_email = $2", [hashedPassword, req.session.resetEmailId], function (err, queryResult) {
+                        console.log(queryResult);
+                        if (!err) res.redirect("/login")
+                        else res.status(200).send(true)
+                    })
+                }
+            })
+        } else {
+            res.redirect("/forgotPassword")
+        }
+    })
 
 // --------------------------------------------------------
 //                      API Routes
@@ -310,11 +347,19 @@ app.post("/userLogin", urlencodedparser, async function (req, res) {
                     req.session.loggedUserEmail = queryResult.rows[0].user_email
 
                     // Send a success response back to the user
-                    res.send({ success: true, result: "Login Successfull" });
+                    let response = {
+                        success: true,
+                        result: "Login Successfull"
+                    }
+                    res.status(200).send("Login Successfull");
                     res.end();
                 } else {
                     // If the passwords don't match, display an error message
-                    res.send({ success: false, error: "Invalid username or password" });
+                    let response = {
+                        success: false,
+                        result: "Invalid username or password"
+                    }
+                    res.status(200).send(response);
                     res.end();
                 }
             });

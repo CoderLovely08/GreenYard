@@ -77,11 +77,10 @@
                             },
                             success: function (response) {
                                 // Check if the request was successful
-                                if (response.success) {
+                                alert(response)
+                                if (response == "Login Successfull") {
                                     alert("Login Successfull")
                                     // Use the response data
-                                    console.log(response.result);
-                                    location.reload()
                                     window.location.replace("/home");
                                 } else {
                                     alert("Invalid Credentials! Try Again...")
