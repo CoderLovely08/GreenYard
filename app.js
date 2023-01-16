@@ -4,7 +4,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const imgur = require('imgur-uploader');
-// const fs = require("fs")
 const fileupload = require("express-fileupload");
 const loadsh = require("lodash")
 const session = require('express-session');
