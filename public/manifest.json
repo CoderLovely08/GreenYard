@@ -1,6 +1,6 @@
 {
-    "name": "Express PWA",
-    "short_name": "Express PWA",
+    "name": "Greenyard",
+    "short_name": "Greenyard",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
